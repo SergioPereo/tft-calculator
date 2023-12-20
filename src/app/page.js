@@ -125,7 +125,6 @@ export default function Home() {
   const prob_e4 = (stores) => {
     if(calc_k(unitCost, unitTaken) < 4)
       return 0
-    if(calc_k())
     return (
       combinations(stores, 1)*
       pow(density_function(0),stores-1)*
