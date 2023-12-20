@@ -57,7 +57,7 @@ export default function Home() {
 
     let comb = combinations(5, x)
     let succ_prob = k/m
-    let cost_prob = probabilities_costs[userLevel-1][unitCost]
+    let cost_prob = probabilities_costs[userLevel-1][unitCost-1]
     let succ_full_prob = succ_prob*cost_prob
     return comb*pow(succ_full_prob, x)*pow((1-succ_full_prob),5-x)
   }
@@ -219,7 +219,7 @@ export default function Home() {
       alert("All inputs must be numbers")
       return
     }
-    if (!(costTaken && unitTaken && unitCost && userLevel && goldToRoll)){
+    if (!((costTaken || costTaken==0) && (unitTaken || unitTaken==0) && unitCost && userLevel && goldToRoll)){
       alert("You must fill all inputs")
       return
     }
@@ -237,7 +237,7 @@ export default function Home() {
     }
 
     const stores = ~~(goldToRoll/2)
-    console.log(stores)
+    //console.log(stores)
 
     /* const e0 = prob_e0(stores)
     const e1 = prob_e1(stores)
@@ -247,7 +247,7 @@ export default function Home() {
     const e5 = prob_e5(stores) */
     const probs = [make_percentage(prob_e0(stores)), make_percentage(prob_e1(stores)), make_percentage(prob_e2(stores)), make_percentage(prob_e3(stores)), make_percentage(prob_e4(stores)), make_percentage(prob_e5(stores))]
     setProbabilities(probs)
-
+    //console.log(probs)
   }
 
   const labels = [0, 1, 2, 3, 4, 5]
@@ -278,7 +278,9 @@ export default function Home() {
           callback: function(value, index, values){
             return value + '%';
           }
-        }
+        },
+        min: 0,
+        max: 100
       }
     }
   };
@@ -370,16 +372,18 @@ export default function Home() {
       <div className="units-calculator-inputs">
         <button onClick={(e) => calculate(e)} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Calculate</button>
       </div>
-      {
-        probabilities!=null ? (
-          <Bar
-            data={data}
-            options={options}
-          />
-        ) : (
-          <div/>
-        )
-      }
+      <div className="units-calculator-outputs">
+        {
+          probabilities!=null ? (
+            <Bar
+              data={data}
+              options={options}
+            />
+          ) : (
+            <div/>
+          )
+        }
+      </div>
     </main>
   )
 }

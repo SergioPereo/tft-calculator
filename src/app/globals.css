@@ -29,3 +29,7 @@ body {
 .units-calculator-inputs{
   width: 70%;
 }
+
+.units-calculator-outputs{
+  width: 65%;
+}
