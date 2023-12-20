@@ -10,4 +10,4 @@ You can take a look at the tool [here](https://tft-calculator-sergiopereos-proje
 
 ## Maths
 
-I'm making the full proofs on Latex, I will upload them here once I have them.
+[here](maths.pdf)
