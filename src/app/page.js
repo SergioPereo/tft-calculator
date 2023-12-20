@@ -51,9 +51,9 @@ export default function Home() {
   const calc_m = (selected_unit_cost, same_cost_taken) => {
     return pool_costs[selected_unit_cost-1]*pool_costs_champs[selected_unit_cost-1] - same_cost_taken
   }
-  const density_function = (x) => {
-    let k = calc_k(unitCost, unitTaken)
-    let m = calc_m(unitCost, costTaken)
+  const density_function = (x, offset=0) => {
+    let k = calc_k(unitCost, unitTaken)-offset
+    let m = calc_m(unitCost, costTaken)-offset
 
     let comb = combinations(5, x)
     let succ_prob = k/m
@@ -68,58 +68,83 @@ export default function Home() {
   }
 
   const prob_e0 = (stores) => {
+    if(calc_k(unitCost, unitTaken) <= 0)
+      return 1
     return pow(density_function(0), stores)
   }
 
   const prob_e1 = (stores) => {
+    if(calc_k(unitCost, unitTaken) < 1)
+      return 0
     return combinations(stores, 1)*
     pow(density_function(0),stores-1)*
     density_function(1)
   }
 
   const prob_e2 = (stores) => {
+    if(calc_k(unitCost, unitTaken) < 2)
+      return 0
     return (
       combinations(stores, 1)*
       pow(density_function(0),stores-1)*
       density_function(2)
     )+(
       combinations(stores, 2)*
-      pow(density_function(1),2)*
+      density_function(1)*
+      density_function(1, 1)*
       pow(density_function(0),stores-2)
     )
   }
 
   const prob_e3 = (stores) => {
+    if(calc_k(unitCost, unitTaken) < 3)
+      return 0
     return (
       combinations(stores, 1)*
       pow(density_function(0),stores-1)*
       density_function(3)
     )+(
-      (stores*(stores-1))*
+      ((stores*(stores-1))/2)*
       pow(density_function(0),stores-2)*
       density_function(1)*
-      density_function(2)
+      density_function(2, 1)
+    )+(
+      ((stores*(stores-1))/2)*
+      pow(density_function(0),stores-2)*
+      density_function(2)*
+      density_function(1, 2)
     )+(
       combinations(stores, 3)*
       pow(density_function(0),stores-3)*
-      pow(density_function(1),3)
+      density_function(1)*
+      density_function(1, 1)*
+      density_function(1, 2)
     )
   }
 
   const prob_e4 = (stores) => {
+    if(calc_k(unitCost, unitTaken) < 4)
+      return 0
+    if(calc_k())
     return (
       combinations(stores, 1)*
       pow(density_function(0),stores-1)*
       density_function(4)
     )+(
       combinations(stores, 2)*
-      pow(density_function(2),2)*
+      density_function(2)*
+      density_function(2, 2)*
       pow(density_function(0),stores-2)
     )+(
-      (stores*(stores-1))*
+      ((stores*(stores-1))/2)*
       pow(density_function(0),stores-2)*
       density_function(1)*
-      density_function(3)
+      density_function(3, 1)
+    )+(
+      ((stores*(stores-1))/2)*
+      pow(density_function(0),stores-2)*
+      density_function(3)*
+      density_function(1, 3)
     )+(
       ((stores*(stores-1)*(stores-2))/2)*
       pow(density_function(0),stores-3)*
@@ -127,30 +152,49 @@ export default function Home() {
       density_function(2)
     )+(
       combinations(stores, 4)*
-      pow(density_function(1),4)*
+      density_function(1)*
+      density_function(1,1)*
+      density_function(1,2)*
+      density_function(1,3)*
       pow(density_function(0),stores-4)
     )
   }
 
   const prob_e5 = (stores) => {
+    if(calc_k(unitCost, unitTaken) < 5)
+      return 0
     return (
       combinations(stores, 1)*
       pow(density_function(0),stores-1)*
       density_function(5)
     )+(
       combinations(stores, 5)*
-      pow(density_function(1),5)*
+      density_function(1)*
+      density_function(1,1)*
+      density_function(1,2)*
+      density_function(1,3)*
+      density_function(1,4)*
       pow(density_function(0),stores-5)
     )+(
-      (stores*(stores-1))*
+      ((stores*(stores-1))/2)*
+      pow(density_function(0),stores-2)*
+      density_function(4)*
+      density_function(1,4)
+    )+(
+      ((stores*(stores-1))/2)*
       pow(density_function(0),stores-2)*
       density_function(1)*
-      density_function(4)
+      density_function(4,1)
     )+(
-      (stores*(stores-1))*
+      ((stores*(stores-1))/2)*
+      pow(density_function(0),stores-2)*
+      density_function(3)*
+      density_function(2,3)
+    )+(
+      ((stores*(stores-1))/2)*
       pow(density_function(0),stores-2)*
       density_function(2)*
-      density_function(3)
+      density_function(3,2)
     )+(
       ((stores*(stores-1)*(stores-2))/2)*
       pow(density_function(0),stores-3)*
