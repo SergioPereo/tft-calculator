@@ -12,6 +12,7 @@ import {
   LinearScale
 } from 'chart.js'; 
 import { Bar } from "react-chartjs-2";
+import "./styles/main.css"
 
 ChartJS.register(
   BarElement,
@@ -29,6 +30,7 @@ export default function Home() {
   const [costTaken, setCostTaken] = useState("");
   const [goldToRoll, setGoldToRoll] = useState("");
   const [probabilities, setProbabilities] = useState(null)
+  const [accumulatedProb, setAccumulatedProb] = useState(null)
 
   const probabilities_costs = [
       [1,0,0,0,0], 
@@ -211,7 +213,6 @@ export default function Home() {
       density_function(2)
     )
   }
-  
 
   const calculate = () => {
     console.log(typeof costTaken, typeof unitTaken, typeof unitCost, typeof userLevel, typeof goldToRoll)
@@ -245,8 +246,16 @@ export default function Home() {
     const e3 = prob_e3(stores)
     const e4 = prob_e4(stores)
     const e5 = prob_e5(stores) */
-    const probs = [make_percentage(prob_e0(stores)), make_percentage(prob_e1(stores)), make_percentage(prob_e2(stores)), make_percentage(prob_e3(stores)), make_percentage(prob_e4(stores)), make_percentage(prob_e5(stores))]
-    setProbabilities(probs)
+    const probs = [prob_e0(stores), prob_e1(stores), prob_e2(stores), prob_e3(stores), prob_e4(stores), prob_e5(stores)]
+    const graphic_probs = [make_percentage(probs[0]), make_percentage(probs[1]), make_percentage(probs[2]), make_percentage(probs[3]), make_percentage(probs[4]), make_percentage(probs[5])]
+    
+    let actual_accumulation = 0
+    let accumulated_probabilities = probs.map(probability => {
+      actual_accumulation += probability
+      return ((1-actual_accumulation)*100).toFixed(2)
+    })
+    setProbabilities(graphic_probs)
+    setAccumulatedProb(accumulated_probabilities)
     //console.log(probs)
   }
 
@@ -372,13 +381,36 @@ export default function Home() {
       <div className="units-calculator-inputs">
         <button onClick={(e) => calculate(e)} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Calculate</button>
       </div>
+      
+      <div className="prob-cards">
+        {
+          accumulatedProb!=null ? (
+            accumulatedProb.map((probability, index) => (
+              <div className="card" key={probability}>
+                <div className="max-w-sm rounded overflow-hidden shadow-lg">
+                  <div className="px-6 py-4">
+                    <div className="font-bold text-xl mb-2">Probability of hitting at least {index===0 ? "a unit: ":(index+1) + " units"}</div>
+                    <p className="text-gray-700 text-base">
+                      {probability}%
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ))
+          ) : (
+            <div/>
+          )
+        }
+      </div>
       <div className="units-calculator-outputs">
         {
           probabilities!=null ? (
-            <Bar
-              data={data}
-              options={options}
-            />
+            <div>
+              <Bar
+                data={data}
+                options={options}
+              />
+            </div>
           ) : (
             <div/>
           )

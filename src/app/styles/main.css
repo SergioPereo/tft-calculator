@@ -1,0 +1,19 @@
+.prob-cards{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.card{
+    width: 160;
+    height: 190;
+}
+@media only screen and (max-width: 940px) {
+    .prob-cards {
+      flex-direction: column;
+    }
+    .card{
+        width: 160;
+        height: 190;
+    }
+  }
